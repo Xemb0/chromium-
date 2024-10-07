@@ -20,4 +20,10 @@ interface TabDao {
 
     @Delete
     suspend fun delete(tab: TabData)
+
+    @Query("DELETE FROM tabs WHERE id = :id")
+    suspend fun removeById(id: Int)
+
+    @Query("UPDATE tabs SET url = :newUrl WHERE id = :selectedTabIndex")
+    suspend fun changeUrl(selectedTabIndex: Int, newUrl: String)
 }

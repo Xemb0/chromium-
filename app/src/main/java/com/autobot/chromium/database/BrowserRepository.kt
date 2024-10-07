@@ -17,4 +17,14 @@ import javax.inject.Inject
         override suspend fun deleteTab(tab: TabData) {
             tabDao.delete(tab)
         }
+
+        override suspend fun removeTab(tab: TabData) {
+            tabDao.removeById(tab.id)
+        }
+
+        override suspend fun loadUrlInTab(selectedTabIndex: Int, newUrl: String) {
+            tabDao.changeUrl(selectedTabIndex,newUrl)
+        }
+
+
     }
