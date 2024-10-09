@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -359,42 +360,57 @@ fun BrowserHome(){
     val bookmark: Painter = painterResource(id = R.drawable.ic_bookmark)
 
     Row(
-        modifier = Modifier.fillMaxWidth().padding(16.dp), // Makes the row take up the full width
-        horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically // Space items evenly within the row
+        modifier = Modifier.fillMaxWidth()
+            .padding(16.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(Color.White.copy(alpha = .3f))
+                , // Makes the row take up the full width
+        horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
     ) {
-        // First icon
-        Image(
-            painter = image,
-            contentDescription = "Icon with image",
-            modifier = Modifier.size(40.dp)
-        )
-
-        // Text in the middle
-        Text(
-            "Chromium",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(8.dp)
-                .weight(1f) // Give weight to the text to push the third icon to the end
-        )
-
-        Row (modifier = Modifier.padding(12.dp).background(color = MyAppThemeColors.current.tertiaryDark , shape = RoundedCornerShape(24.dp)).padding(8.dp) , verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(16.dp), // Makes the row take up the full width
+            horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically // Space items evenly within the row
+        ) {
+            // First icon
             Image(
-                painter = painterResource(id = R.drawable.ic_wether),
+                painter = image,
                 contentDescription = "Icon with image",
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(40.dp)
+            )
+
+            // Text in the middle
+            Text(
+                "Chromium",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .weight(1f) // Give weight to the text to push the third icon to the end
+            )
+
+            Row (modifier = Modifier.padding(12.dp).background(color = MyAppThemeColors.current.tertiaryDark , shape = RoundedCornerShape(24.dp)).padding(8.dp) , verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
+                Image(
+                    painter = painterResource(id = R.drawable.ic_wether),
+                    contentDescription = "Icon with image",
+                    modifier = Modifier.size(20.dp),
+
+                    )
+                Text("28 C" , fontSize = 16.sp)
+            }
+
+            // Third icon aligned at the end
+            Image(
+                painter = bookmark,
+                contentDescription = "Icon with image",
+                modifier = Modifier
+
+                    .background(color = MyAppThemeColors.current.primary , shape = RoundedCornerShape(24.dp))
+                    .padding(8.dp)
+                    .size(20.dp)
 
             )
-            Text("28 C" , fontSize = 16.sp)
         }
 
-        // Third icon aligned at the end
-        Image(
-            painter = bookmark,
-            contentDescription = "Icon with image",
-            modifier = Modifier.size(40.dp)
-        )
     }
 
 }

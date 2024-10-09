@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.autobot.chromium.database.WebBrowserViewModel
 import com.autobot.chromium.theme.MyAppThemeComposable
 import com.autobot.chromium.ui.HomePage
+import com.autobot.chromium.ui.SettingsScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable
 
@@ -38,11 +39,11 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = HomePage
+                        startDestination = NavHomePage
                     ) {
 
 
-                        composable<HomePage> {
+                        composable<NavHomePage> {
                             HomePage(
                                 viewModel = mainViewModel
 //                                onSignUpClick = { userData ->
@@ -54,7 +55,16 @@ class MainActivity : ComponentActivity() {
 //                                        )
 //                                    )
 //                                }
+                                , onBottomSheetOptionClick = {
+
+                                    navController.navigate(
+                                        NavSettingsScreen
+                                    )
+                                }
                             )
+                        }
+                        composable<NavSettingsScreen> {
+                            SettingsScreen()
                         }
 
                 }
@@ -82,4 +92,19 @@ class MainActivity : ComponentActivity() {
 //)
 
 @Serializable
-data object HomePage
+data object NavHomePage
+@Serializable
+data object NavSettingsScreen
+
+@Serializable
+data object NavDownloadScreen
+
+
+@Serializable
+data object NavBookmarkScreen
+
+
+@Serializable
+data object NavHelpScreen
+
+

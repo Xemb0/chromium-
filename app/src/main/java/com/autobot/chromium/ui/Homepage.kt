@@ -31,14 +31,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.autobot.chromium.database.TabData
 import com.autobot.chromium.database.WebBrowserViewModel
-import com.autobot.chromium.theme.MyAppThemeColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomePage(viewModel: WebBrowserViewModel = hiltViewModel()) {
+fun HomePage(viewModel: WebBrowserViewModel = hiltViewModel(),onBottomSheetOptionClick: (String) -> Unit) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     var currentUrl by remember { mutableStateOf("Home") }
     var showBottomSheet by remember { mutableStateOf(false) }
+    var isSearchBarFocused by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     // Collecting tabs directly from the Flow
@@ -62,6 +62,9 @@ fun HomePage(viewModel: WebBrowserViewModel = hiltViewModel()) {
             onCloseTab = { index, tab ->
                 viewModel.removeTab(tab)
                 updateTabSelectionAfterClose(tabs, index, { selectedTabIndex = it }, { currentUrl = it })
+
+                selectedTabIndex -= 1
+
             }
         )
 
@@ -78,7 +81,7 @@ fun HomePage(viewModel: WebBrowserViewModel = hiltViewModel()) {
         }
 
         // Bottom Search Bar with add, search, and menu options
-        SearchBar(
+        SearchBarBrowser(
             onAddTab = {
                 viewModel.addTab("Tab ${tabs.size + 1}", "Home")
                 selectedTabIndex = tabs.size - 1
@@ -94,9 +97,21 @@ fun HomePage(viewModel: WebBrowserViewModel = hiltViewModel()) {
             },
             onTextChange = { text ->
                 currentUrl = text
-                viewModel.loadUrlInCurrentTab(selectedTabIndex, text)
             },
-            searchBarText = currentUrl
+            onFocusChange = { focused ->
+                isSearchBarFocused = focused
+            },
+            searchBarText = currentUrl,
+            suggestions = if (isSearchBarFocused && currentUrl.isNotEmpty()) {
+                listOf("Compose", "Jetpack", "Android", "Kotlin")
+            } else {
+                emptyList()
+            },
+            onSuggestionClick = { suggestion ->
+                val newUrl = "https://www.google.com/search?q=$suggestion"
+                viewModel.loadUrlInCurrentTab(selectedTabIndex, newUrl)
+                currentUrl = newUrl
+            }
         )
     }
 
@@ -106,13 +121,17 @@ fun HomePage(viewModel: WebBrowserViewModel = hiltViewModel()) {
                 showBottomSheet = false
             },
             sheetState = sheetState,
-            modifier = Modifier.background(MyAppThemeColors.current.tertiaryDark)
+            modifier = Modifier
         ) {
-            BottomSheetContent()
+            BottomSheetContent(
+                onBottomSheetOptionClick = {
+                    onBottomSheetOptionClick(it)
+                }
+
+            )
         }
     }
 }
-
 @Composable
 fun TabRow(
     tabs: List<TabData>,
@@ -131,7 +150,8 @@ fun TabRow(
                 isSelected = index == selectedTabIndex,
                 onClick = { onTabSelected(index, tab.url) },
                 modifier = Modifier.width(160.dp).padding(end = 8.dp),
-                onCloseClick = { onCloseTab(index, tab) }
+                onCloseClick = { onCloseTab(index, tab)
+                }
             )
         }
     }

@@ -28,14 +28,14 @@ import com.autobot.chromium.database.TabData
     val backgroundColor = if (isSelected) Color.LightGray else Color.Gray
 
     Row(
-        modifier = modifier
+        modifier = modifier.padding(top = if(isSelected) 8.dp else 4.dp)
             .clip(
                 if (isSelected) {
-                    RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp) // Rounded corners for the selected tab
+                    RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp) // Rounded corners for the selected tab
                 } else {
                     RoundedCornerShape(8.dp) // Full rounded corners for non-selected tab
                 }
-            )
+            )// Padding for the selected tab
             .clickable { onClick() }
             .background(backgroundColor)
             .padding(vertical = 8.dp, horizontal = 8.dp), // Padding inside the tab
@@ -66,7 +66,7 @@ import com.autobot.chromium.database.TabData
                     .clickable { onCloseClick() }
                     .clip(RoundedCornerShape(24.dp)) // Adjust icon size to fit the tab nicely
                     .size(24.dp)
-                    .background(Color.Red.copy(alpha = .3f))
+                    .background(Color.Gray.copy(alpha = .3f))
             )
         }
     }
