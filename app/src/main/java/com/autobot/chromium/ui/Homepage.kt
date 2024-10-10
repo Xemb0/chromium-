@@ -80,21 +80,31 @@ fun HomePage(
             modifier = Modifier.fillMaxWidth().weight(1f),
             contentAlignment = Alignment.Center
         ) {
-            WebBrowser(
-                url = currentUrl,
-                onUrlChange = { newUrl ->
-                    viewModel.updateUrl(newUrl)
-                    textFieldValue = newUrl
-                },
-                modifier = Modifier.fillMaxHeight()
-            )
+            if(currentUrl.isEmpty()){
+                BrowserHomePage {
+                    viewModel.updateUrl(it)
+                    viewModel.loadUrlInCurrentTab(selectedTabIndex, it)
+                }
+            }else
+            {
+                WebBrowser(
+                    url = currentUrl,
+                    onUrlChange = { newUrl ->
+                        viewModel.updateUrl(newUrl)
+                        textFieldValue = newUrl
+                    },
+                    modifier = Modifier.fillMaxHeight()
+                )
+
+            }
+
         }
 
 
             SearchBarBrowser (
                 textFieldValue = textFieldValue,
                 onTextFieldValueChange = { newValue ->
-                    textFieldValue = newValue
+                    textFieldValue = newValue.toString()
                 },
                 onReload = {
                     viewModel.getWebViewHolder(selectedTabIndex).webView?.reload()

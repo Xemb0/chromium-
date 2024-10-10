@@ -75,10 +75,10 @@ fun SearchBarBrowser(
                     ItemSuggestions(
                         suggestionText = suggestions[index],
                         onSuggestionClick = {
-                            onSuggestionClick(it)
+                            onSuggestionClick(formatUrl(it))
                             isActive = false
                             keyboardController?.hide()
-                            onSearch(it)
+                            onSearch(formatUrl(it))
                         }
                     )
                 }
@@ -101,7 +101,7 @@ fun SearchBarBrowser(
                     isActive = it.isNotEmpty()
                 },
                 onSearchClicked = {
-                    onSearch(textFieldValue)
+                    onSearch(formatUrl(textFieldValue))
                     isActive = false
                     keyboardController?.hide()
                 },
@@ -250,14 +250,33 @@ fun ItemSuggestions(
 @Composable
 fun SearchBarBrowserPreview() {
     SearchBarBrowser(
-        textFieldValue = "https://stevdza-san.com",
+        textFieldValue = "https://google.com",
         onTextFieldValueChange = {},
         onReload = {},
         onAddTab = {},
         onMenuClick = {},
         onSearch = {},
-        suggestions = listOf("https://stevdza-san.com", "https://www.google.com"),
+        suggestions = listOf("https://gooel.com", "https://www.google.com"),
         onSuggestionClick = {},
         onFocusChange = {}
     )
+}
+// Function to format the URL
+fun formatUrl(input: String): String {
+    val formattedUrl = input.trim()
+
+    return if (formattedUrl.startsWith("http://") ||
+        formattedUrl.startsWith("https://") ||
+        formattedUrl.contains(".") && !formattedUrl.contains(" ")
+    ) {
+        // Treat as a URL if it has a protocol or contains a dot without spaces.
+        if (!formattedUrl.startsWith("http://") && !formattedUrl.startsWith("https://")) {
+            "https://$formattedUrl"
+        } else {
+            formattedUrl
+        }
+    } else {
+        // Treat as a search query if it does not match URL criteria.
+        "https://www.google.com/search?q=${formattedUrl.replace(" ", "+")}"
+    }
 }
