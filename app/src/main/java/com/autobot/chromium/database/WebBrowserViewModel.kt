@@ -1,7 +1,8 @@
 package com.autobot.chromium.database
 
 import android.graphics.Bitmap
-import android.webkit.WebView
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,10 @@ class WebBrowserViewModel @Inject constructor(private val repository: TabReposit
     // StateFlow to hold the list of tabs
     private val _tabs = MutableStateFlow<List<TabData>>(emptyList())
     val tabs: StateFlow<List<TabData>> get() = _tabs
+
+    // Current URL for the selected tab
+    private val _currentUrl = mutableStateOf("Home")
+    val currentUrl: State<String> = _currentUrl
 
     private val webViewMap = mutableMapOf<Int, WebViewHolder>()
 
@@ -37,6 +42,14 @@ class WebBrowserViewModel @Inject constructor(private val repository: TabReposit
         }
     }
 
+    // Function to update the current URL in the state
+    fun updateUrl(newUrl: String) {
+        _currentUrl.value = newUrl
+        val currentTabIndex = _tabs.value.indexOfFirst { it.url == _currentUrl.value }
+        webViewMap[currentTabIndex]?.currentUrl = newUrl
+    }
+
+    // Function to add a new tab
     fun addTab(name: String, url: String) {
         val tab = TabData(
             name = name,
@@ -51,6 +64,7 @@ class WebBrowserViewModel @Inject constructor(private val repository: TabReposit
         }
     }
 
+    // Function to remove a tab
     fun removeTab(tab: TabData) {
         viewModelScope.launch {
             repository.removeTab(tab)
@@ -60,21 +74,24 @@ class WebBrowserViewModel @Inject constructor(private val repository: TabReposit
         }
     }
 
+    // Retrieve or create a WebViewHolder for a given tab index
     fun getWebViewHolder(index: Int): WebViewHolder {
         return webViewMap.getOrPut(index) { WebViewHolder() }
     }
 
+    // Update WebViewHolder with new data
     fun updateWebViewHolder(index: Int, webViewHolder: WebViewHolder) {
         webViewMap[index] = webViewHolder
     }
 
+    // Load a new URL in the currently selected tab
     fun loadUrlInCurrentTab(selectedTabIndex: Int, newUrl: String) {
         viewModelScope.launch {
-            repository.loadUrlInTab(selectedTabIndex,newUrl)
+            val tab = _tabs.value.getOrNull(selectedTabIndex)
+            tab?.let {
+                repository.loadUrlInTab(selectedTabIndex, newUrl)
+                updateUrl(newUrl)
+            }
         }
-
-
     }
 }
-
-class WebViewHolder(var webView: WebView? = null, var currentUrl: String? = null)

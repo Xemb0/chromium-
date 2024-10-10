@@ -11,3 +11,4 @@ data class TabData(
     val url: String,
     val icon: Bitmap,
 )
+

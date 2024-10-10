@@ -1,8 +1,6 @@
 package com.autobot.chromium.theme
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.unit.dp
@@ -58,13 +56,12 @@ private val typo = MyAppTypo(
 fun MyAppThemeComposable(content: @Composable () -> Unit) {
     val darkTheme = isSystemInDarkTheme()
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-    val rippleIndication = rememberRipple()
+
 
     CompositionLocalProvider(
         MyAppThemeColors provides colorScheme,
         MyAppThemeShapes provides shape,
         MyAppThemeSizes provides size,
-        LocalIndication provides rippleIndication,
         MyAppThemeTypo provides typo,
         content = content
     )
