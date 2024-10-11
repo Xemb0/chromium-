@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class TabData(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val url: String,
+    var url: String,
     val icon: Bitmap,
 )
 

@@ -75,10 +75,9 @@ fun SearchBarBrowser(
                     ItemSuggestions(
                         suggestionText = suggestions[index],
                         onSuggestionClick = {
-                            onSuggestionClick(formatUrl(it))
+                            onSuggestionClick(it)
                             isActive = false
                             keyboardController?.hide()
-                            onSearch(formatUrl(it))
                         }
                     )
                 }
@@ -101,7 +100,7 @@ fun SearchBarBrowser(
                     isActive = it.isNotEmpty()
                 },
                 onSearchClicked = {
-                    onSearch(formatUrl(textFieldValue))
+                    onSearch(textFieldValue)
                     isActive = false
                     keyboardController?.hide()
                 },
@@ -175,7 +174,6 @@ fun CustomSearchBar(
                     isFocused = it.isFocused
                     onFocusChange(it.isFocused)
                 }
-                .padding(horizontal = 0.dp, vertical = 12.dp)
                 .background(
                     color = Color.White.copy(alpha = 0.1f),
                     shape = RoundedCornerShape(8.dp)
@@ -260,23 +258,4 @@ fun SearchBarBrowserPreview() {
         onSuggestionClick = {},
         onFocusChange = {}
     )
-}
-// Function to format the URL
-fun formatUrl(input: String): String {
-    val formattedUrl = input.trim()
-
-    return if (formattedUrl.startsWith("http://") ||
-        formattedUrl.startsWith("https://") ||
-        formattedUrl.contains(".") && !formattedUrl.contains(" ")
-    ) {
-        // Treat as a URL if it has a protocol or contains a dot without spaces.
-        if (!formattedUrl.startsWith("http://") && !formattedUrl.startsWith("https://")) {
-            "https://$formattedUrl"
-        } else {
-            formattedUrl
-        }
-    } else {
-        // Treat as a search query if it does not match URL criteria.
-        "https://www.google.com/search?q=${formattedUrl.replace(" ", "+")}"
-    }
 }

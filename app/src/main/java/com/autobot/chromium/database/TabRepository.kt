@@ -7,4 +7,5 @@ interface TabRepository {
     suspend fun removeTab(tab: TabData)
     suspend fun loadUrlInTab(selectedTabIndex: Int, newUrl: String)
     suspend fun getTabs(): List<TabData>
+    suspend fun updateTab(tab: TabData)
 }

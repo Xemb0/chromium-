@@ -28,4 +28,8 @@ class BrowserRepository @Inject constructor(private val tabDao: TabDao) : TabRep
     override suspend fun getTabs(): List<TabData> {
         return tabs.toList()
     }
+    override suspend fun updateTab(tab: TabData) {
+        tabs.removeAll { it.id == tab.id }
+        tabs.add(tab)
+    }
 }
